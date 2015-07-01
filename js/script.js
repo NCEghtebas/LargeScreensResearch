@@ -34,6 +34,8 @@ function calculateCircleSize(){
 
 // TODO configure circle placement or randomly layout the circles. 
 
+// TODO function to make circles
+
 // How to make a function continuously check if circle is in correct order and change circle color from red to green 
 // gridLayer.add(grid);
 
