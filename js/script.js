@@ -2,7 +2,7 @@ var canvas = document.getElementById("canvas_1");
 var context = canvas.getContext('2d');
 var data = canvas.toDataURL();
 var img = new Image();
-var appList = [];
+var winIDList = [];
 
 var menuX = window.innerWidth;
 var menuY = 7/8 * window.innerHeight;  
@@ -47,22 +47,30 @@ function mouseDown (event) {
   canvas_y = event.pageY;
   // console.log("x: "+ canvas_x + " y: " + canvas_y);
   if (event.pageY >= menuY) {
-    startApplication();
-    // console.log("start application");
+    openWindow();
   }
 }
 
-var c = 1;
-function cuniq() {
-    var d = new Date(),
-        m = d.getMilliseconds() + "",
-        u = ++d + m + (++c === 10000 ? (c = 1) : c);
+// function contains(a, obj) {
+//     for (var i = 0; i < a.length; i++) {
+//         if (a[i] === obj) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
-    return u;
-}
+// function createWinID(){
+// 	var winID = "window"+ Math.round((Math.random()*100;
+// 	if (!contains(winID, winIDList)){
+// 		winIDList.push("window"+ Math.round((Math.random()*100)));
+// 	}else{
+// 		createWinID();
+// 	}
+// }
 
-function startApplication(){
-  div = document.createElement(cuniq);
+function openWindow(){
+  div = document.createElement("canvas_1");
   div.style.width = "100px";
   div.style.height = "100px";
   div.style.background = "red";
