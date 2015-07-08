@@ -1,26 +1,12 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html>
-	<head>
-		<link type="text/css" href="css/main.css" rel="stylesheet"/>
-		<!-- <tile> </title> -->
-	</head>
-
-	<body onload= init() onresize = resizeCanvas()>
-		<!-- <canvas id="canvas_1" style="border:1px solid #000000;"></canvas> -->
-		<div id="container"></div>
-	    <script src= "js/kinetic-v5.0.2.js"> </script>		
-		<script src = "js/script.js"> </script>
-	</body>	
+    <head>
+        <link type="text/css" href="css/main.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div id='container'>     
+            <div id="elem" onmousedown='mydragg.startMoving(this,"container",event);' onmouseup='mydragg.stopMoving("container");' style="width: 100px;height: 100px;">
+            </div>  
+    </body>
+    <script src = "js/script.js"></script>
 </html>
-
-<!-- optimizations: dont have to use canvas. just make divs, onclick method, create element -->
-
-<!-- every div can have an event listener 
-store id in global variable. 
-another function that is running that would move that particular div with that id to mouse.
-
-local version. 
-
-
--->     
