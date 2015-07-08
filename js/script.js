@@ -45,42 +45,40 @@ function grid(){
     gDiv.id = 'grid';
 }
 
-
+var circle_number = 48 ;
 var my_div = null;
 var mainDiv = null;
 var column = null;
 var sq = null;
+var position_array = calculateGrid();
+
+function calculateGrid(){
+    
+}
 
 //TODO: make border only 1 px thick
-function addElement(r, c)
+function generateGrid(r, c)
 {
-
-  // create a new div element
-  // and give it some content
-  // mainDiv = document.createElement("div");
-  // mainDiv.setAttribute('id', 'MainDiv');  
-  // mainDiv.setAttribute('style', 'border:1px solid black; width:130px; height:160px;');
   container = document.getElementById('container');
-
   var i=0,id;
   var k= 1;
-  for(j=0;j<c;j++) {
+  for(j=0; j<c; j++) {
       column = document.createElement("div");
       column.setAttribute('id', 'Column' + (j+1));  
-
       column.setAttribute('style', 'float:left; border:1px solid black');
-
       column.style.width = String(Math.round(1/c*100)) + '%';//window.innerWidth/c;
-      console.log("width: "+ column.style.width);
       column.style.height = '100%';
-      console.log("height:" + column.style.height);
-      // for(i=0; i<4; i++) {
-      //     sq = document.createElement("div");
-      //     sq.setAttribute('id', "sq" + k);  
-      //     sq.setAttribute('style', 'width:38px; height:38px; border:1px solid black');
-      //     k++;
-      //     column.appendChild(sq);
-      // }
+
+      for(i=0; i<r; i++) {
+          sq = document.createElement("div");
+          sq.setAttribute('id', "sq" + k);  
+          sq.setAttribute('style', 'border:1px solid black');
+          sq.style.height = String(Math.round(1/r*100)) +'%';
+          sq.style.width = '100%';
+
+          k++;
+          column.appendChild(sq);
+      }
 
       container.appendChild(column);
   }
@@ -89,11 +87,22 @@ function addElement(r, c)
   document.body.insertBefore(container, my_div);
 }
 
+function generateCircles(n){
+    container = document.getElementById('container');
+    for(i=0; i<n; i++){
+        circle = document.createElement("div");
+        circle.setAttribute('id', 'Circle'+ (i+1));
+        circle.setAttribute('style', 'position: absolute; background-color: red; width: 100px; height: 100px; border-radius: 100px; border: 3px solid black');
+        circle.setAttribute('onmousedown' ,'mydragg.startMoving(this,"container",event);');
+        circle.setAttribute('onmouseup', 'mydragg.stopMoving("container");');
+        container.appendChild(circle);
+    }
+}
 
-// genDivs(5);
-addElement(5,7);
+generateCircles(circle_number);
 
-// createGrid(5, 0);
+generateGrid(5,7);
+
 
 
 
