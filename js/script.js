@@ -1,100 +1,109 @@
-var stage = new Kinetic.Stage({
-  container: 'container',
-  width: 1000,
-  height: 500
-});
-
-
-var reorderLayer = new Kinetic.Layer();
-var gridLayer = new Kinetic.Layer();
-
-var circle = new Kinetic.Circle({
-  x: 100,
-  y: stage.height()/2,
-  // sides: 6,
-  radius: 70,
-  fill: '#00D2FF',
-  stroke: 'black',
-  strokeWidth: 4,
-  draggable: true
-});
-
-var line = new Kinetic.Line({
-  points: [73, 70, 340, 23, 450, 60, 500, 20],
-  stroke: 'blue',
-  strokeWidth: 10,
-  lineCap: 'round',
-  lineJoin: 'round',
-  dash: [29, 20, 0.001, 20]
-});
-
 function init() {
 }
 
 function resizeCanvas() {
+  // onResize();
 }
 
-// Taken from here: http://goo.gl/bHGUi3
+var stage = new Kinetic.Stage({
+        container: 'container',
+        width: window.innerWidth,
+        height: window.innerHeight,
+        draggable: true
+      });
 
-// Calculates Circle Size based on window size
-function calculateCircleSize(){
-  //TODO: think of a justifiable way to do so 
-}
+// var shape_group = new Kinetic.Group({
+//   x: 10,
+//   y: 10,
+//   width: 10,
+//   height: 10,
+//   draggable: true
+// });
 
+var layer = new Kinetic.Layer();
 
-function draw_shape(sides) {}
-
-var shape_group = new Kinetic.Group({
-  x: 10,
-  y: 10,
-  width: 10,
-  height: 10,
-  draggable: true
-});
-
-var shape_size = 50;
-// TODO: make radius dependant on window size
-var radius = shape_size / 2;
-var shape = new Kinetic.Circle({
-  x: ,
-  y: 0,
-  radius: radius,
-  fill:'#fff',
+var circle = new Kinetic.Circle({
+  x: 200,
+  y: 100,
+  radius: 70,
+  fill: 'red',
   stroke: 'black',
-  strokeWidth: 1,
-  lineJoin: 'bevel'
+  strokeWidth: 4
 });
 
-//TODO: return nearest x and y to simulate grid. 
-//TODO: think about scaling grid size based on window size
-function current_cell_from_mouse_position(){
+var circle2 = new Kinetic.Circle({
+  x: 200,
+  y: 100,
+  radius: 70,
+  fill: 'green',
+  stroke: 'black',
+  strokeWidth: 4
+});
+
+
+// add the shape to the layer
+layer.add(circle);
+
+// add the layer to the stage
+stage.add(layer);
+
+var i = 1;
+function closest_cell_from_mouse_position(shape){
+  var cell = new Object;
+  cell.x = 70+i - shape.getX();
+  cell.y = 50+i - shape.getY();
+  return cell;
 }
 
-shape_group.on('dragmove', function() {
-  var current_cell = current_cell_from_mouse_position()
-  shape_group.setX(70);
-  console.log(shape_group.getX());
-  shape_group.setY(50);
-  console.log(shape_group.getY());
+circle.on('mouseup', function() {
+  i++ ;
+  console.log("mouse up on shape_group called");
+  var closest_cell = closest_cell_from_mouse_position(circle);
+  // circle.setPosition(closest_cell.x, closest_cell.y);
+  circle.move({x: closest_cell.x, y: closest_cell.y} );
+  // console.log(circle.getX());
+  // circle.setY(closest_cell.y);
+  // circle.setX(closest_cell.x);
+  console.log("y: " +circle.getY());
+  console.log("x: " +circle.getX());
+  layer.draw();
+  layer.add(circle);
+  stage.add(layer); 
+  return stage;
+  console.log("moved");
 });
-shape_group.add(shape);
-      gridLayer.add(shape_group);
 
-// TODO add text inside circle
 
-// TODO configure circle placement or randomly layout the circles. 
 
-// TODO function to make circles
 
-// How to make a function continuously check if circle is in correct order and change circle color from red to green 
-// gridLayer.add(grid);
+//////////////////////
 
-// function mouseDown(event) {
-//   canvas_x = event.pageX;
-//   canvas_y = event.pageY;
-//   console.log("x: "+ canvas_x + " y: " + canvas_y);
-// }
+// var stage = new Kinetic.Stage({
+//     container: 'container',
+//     width: 300,
+//     height: 300
+// });
 
-// gridLayer.add(line);
-// reorderLayer.add(circle);
-stage.add(reorderLayer).add(gridLayer);
+// var layer = new Kinetic.Layer();
+
+// var rect = new Kinetic.Rect({
+//     fill: 'red',
+//     width: stage.getWidth(),
+//     height: stage.getHeight()
+//     });
+                            
+// layer.add(rect);
+// stage.add(layer);
+
+// rect.on('mouseup', function() {
+//    alert('mouseup'); 
+// });
+
+////////////////
+
+
+
+
+
+
+
