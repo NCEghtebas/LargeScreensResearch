@@ -91,21 +91,37 @@ function generateGrid(number_of_rows, number_of_columns)
   document.body.insertBefore(container, my_div);
 }
 
+// function generateCircles(n){
+//     container = document.getElementById('container');
+//     for(i=0; i<n; i++){
+//         circle = document.createElement("div");
+//         circle.setAttribute('id', 'Circle'+ (i+1));
+//         //TODO: make radius of circle change with screen size
+//         circle.style.width = 100;
+//         circle.style.height = 100; 
+//         circle.style.borderRadius= 100;
+//         circle.setAttribute('style', 'position: absolute; background-color: red; border: 3px solid black');
+//         circle.setAttribute('onmousedown' ,'mydragg.startMoving(this,"container",event);');
+//         circle.setAttribute('onmouseup', 'mydragg.stopMoving("container");');
+//         container.appendChild(circle);
+//     }
+// }
+
 function generateCircles(n){
     container = document.getElementById('container');
+    // Why you no work?
+    // points = getGridCenterPoints(4, 12);
     for(i=0; i<n; i++){
         circle = document.createElement("div");
         circle.setAttribute('id', 'Circle'+ (i+1));
-        //TODO: make radius of circle change with screen size
-        circle.style.width = 100;
-        circle.style.height = 100; 
-        circle.style.borderRadius= 100;
-        circle.setAttribute('style', 'position: absolute; background-color: red; border: 3px solid black');
+        circle.setAttribute('style', 'position: absolute; background-color: red; width: 100px; height: 100px; border-radius: 100px; border: 3px solid black');
         circle.setAttribute('onmousedown' ,'mydragg.startMoving(this,"container",event);');
         circle.setAttribute('onmouseup', 'mydragg.stopMoving("container");');
         container.appendChild(circle);
     }
 }
+
+generateCircles(circle_number);
 
 // Doesn't include 0
 function naturalNumberSequence(cardinality){
@@ -143,29 +159,16 @@ function greaterThan(val1, val2){
   }
 }
 
-// generateCircles(circle_number);
-
 generateGrid(4,12);
+
+//This line of code deosn't work when inseterted in generatCricles function
 points = getGridCenterPoints(4, 12);
 
 console.log(points);
 
-/* CODE GRAVEYARD
+// Also, anycomments on my code and how to make it cleaner? It is getting 
+// super messy superfast.
 
-function oddNumSequence(length){
-  var odds = [];
-  for(i=0; i<((length-1)*2); i++){
-    if((i%2)){
-      odds.push(i);
-    }
-  } 
-  return odds;
-}
-
-// number_of_columns-1
-var odds = oddNumSequence(11);
-
-*/
 
 
 
