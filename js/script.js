@@ -92,16 +92,30 @@ function generateCircles(n){
     for(i=0; i<n; i++){
         circle = document.createElement("div");
         circle.setAttribute('id', 'Circle'+ (i+1));
-        circle.setAttribute('style', 'position: absolute; background-color: red; width: 100px; height: 100px; border-radius: 100px; border: 3px solid black');
+        circle.style.width = 100;
+        circle.style.height = 100; 
+        circle.style.borderRadius= 100;
+        circle.setAttribute('style', 'position: absolute; background-color: red; border: 3px solid black');
         circle.setAttribute('onmousedown' ,'mydragg.startMoving(this,"container",event);');
         circle.setAttribute('onmouseup', 'mydragg.stopMoving("container");');
         container.appendChild(circle);
     }
 }
 
-generateCircles(circle_number);
+function greaterThan(val1, val2){
+  if(val1 > val2){
+    return val1;
+  }else{
+    return val2;
+  }
+}
 
-generateGrid(5,7);
+
+console.log()
+
+// generateCircles(circle_number);
+
+generateGrid(4,12);
 
 
 
