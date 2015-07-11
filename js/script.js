@@ -1,3 +1,4 @@
+// Makes divs draggable, taken from: http://jsfiddle.net/g6m5t8co/1/
 var mydragg = function(){
     return {
         move : function(divid,xpos,ypos){
@@ -40,26 +41,6 @@ var mydragg = function(){
     }
 }();
 
-function grid(){
-    var gDiv = document.createElement('div');
-    gDiv.id = 'grid';
-}
-
-// Untested
-function findCircleCenter(circle){
-  width = circle.style.width;
-  height = circle.style.height;
-  return width/2, height/2;
-}
-
-
-var circle_number = 48 ;
-var my_div = null;
-var mainDiv = null;
-var column = null;
-var sq = null;
-// var position_array = calculateGrid();
-
 //TODO: make border only 1 px thick
 function generateGrid(number_of_rows, number_of_columns)
 {
@@ -69,17 +50,19 @@ function generateGrid(number_of_rows, number_of_columns)
   for(j=0; j<number_of_columns; j++) {
       column = document.createElement("div");
       column.setAttribute('id', 'Column' + (j+1));  
-      column.setAttribute('style', 'float:left; border:1px solid black');
+      column.setAttribute('style', 'float:left; border:1px solid black'); //border:1px solid black
       column.style.width = String(Math.round(1/number_of_columns*100)) + '%';//window.innerWidth/c;
       column.style.height = '100%';
-
+      column_div_array.push(column);
       for(i=0; i<number_of_rows; i++) {
           square = document.createElement("div");
           square.setAttribute('id', "Square" + k);  
-          square.setAttribute('style', 'border:1px solid black');
+          square.setAttribute('style', 'border:1px solid black; text-align:center');
           square.style.height = String(Math.round(1/number_of_rows*100)) +'%';
           square.style.width = '100%';
-
+          var node = document.createTextNode("A");
+          square.appendChild(node);
+          square_div_array.push(square);
           k++;
           column.appendChild(square);
       }
@@ -91,40 +74,63 @@ function generateGrid(number_of_rows, number_of_columns)
   document.body.insertBefore(container, my_div);
 }
 
-// function generateCircles(n){
-//     container = document.getElementById('container');
-//     for(i=0; i<n; i++){
-//         circle = document.createElement("div");
-//         circle.setAttribute('id', 'Circle'+ (i+1));
-//         //TODO: make radius of circle change with screen size
-//         circle.style.width = 100;
-//         circle.style.height = 100; 
-//         circle.style.borderRadius= 100;
-//         circle.setAttribute('style', 'position: absolute; background-color: red; border: 3px solid black');
-//         circle.setAttribute('onmousedown' ,'mydragg.startMoving(this,"container",event);');
-//         circle.setAttribute('onmouseup', 'mydragg.stopMoving("container");');
-//         container.appendChild(circle);
-//     }
-// }
+function getGridPoints(number_of_rows, number_of_columns){
+  var pointArray = [];
+  var naturalNumbers = naturalNumberSequence(number_of_columns*number_of_rows);
+  var i = 0; 
+  for(c= 0; c< number_of_columns; c++){
+    for(r= 0; r< number_of_rows; r++){
+      var squareElement = document.getElementById('Square'+naturalNumbers[i]);
+      var rect = squareElement.getBoundingClientRect();
+      // Center point of the grid:
+      // centerPointArray.push({x: rect.width/2 + rect.left, y: rect.height/2 + rect.top});
+      // Left and Top coordiates of grid
+      pointArray.push({x: rect.left, y: rect.top});
+      i++;
+    }
+  }
+  return pointArray;
+}
 
+// Generates circles out of divs and returns array of circle ID names
 function generateCircles(n){
     container = document.getElementById('container');
-    // Why you no work?
-    // points = getGridCenterPoints(4, 12);
+    var circleIDs = [] 
     for(i=0; i<n; i++){
         circle = document.createElement("div");
-        circle.setAttribute('id', 'Circle'+ (i+1));
-        circle.setAttribute('style', 'position: absolute; background-color: red; width: 100px; height: 100px; border-radius: 100px; border: 3px solid black');
+        circleIDs.push('Circle'+ (i+1));
+        circle.setAttribute('id', circleIDs[i]);
+        circle.setAttribute('style', 'position: absolute; background-color: red; border-radius: 100px; border: 3px solid black');
+        circle.style.top = points[i].y+'px';
+        circle.style.left = points[i].x+'px';
+        circle.style.width = determineDiameter();
+        circle.style.height = determineDiameter();
         circle.setAttribute('onmousedown' ,'mydragg.startMoving(this,"container",event);');
         circle.setAttribute('onmouseup', 'mydragg.stopMoving("container");');
         container.appendChild(circle);
     }
+    return circleIDs;
 }
 
-generateCircles(circle_number);
+// whenever window is resized, this function is called
+function resizeCanvas() {
+  var circleID;
+  points = getGridPoints(4, 12);
+  var i = 0; 
+  for (circleID of circleNames) {
+    // recalculate circle positions
+    circle = document.getElementById(circleID);
+    circle.style.top = points[i].y+'px';
+    circle.style.left = points[i].x+'px'; 
+    // recaluculate circle dimensions
+    circle.style.height = determineDiameter();
+    circle.style.width = determineDiameter();
+    i++;
+  }
+}
 
 // Doesn't include 0
-function naturalNumberSequence(cardinality){
+function naturalNumberSequence(cardinality) {
   var a = [];
   for (var i = 1; i <= cardinality; i++) {
     a.push(i);
@@ -132,42 +138,44 @@ function naturalNumberSequence(cardinality){
   return a;
 }
 
-function getGridCenterPoints(number_of_rows, number_of_columns){
-  var centerPointArray = [];
-  var naturalNumbers = naturalNumberSequence(number_of_columns*number_of_rows);
-  var i = 0; 
-  for(c= 0; c< number_of_columns; c++){
-    for(r= 0; r< number_of_rows; r++){
-      var squareElement = document.getElementById('Square'+naturalNumbers[i]);
-      var rect = squareElement.getBoundingClientRect();
-      centerPointArray.push({x: rect.width/2 + rect.left, y: rect.height/2 + rect.top});
-      // console.log(coordinate.x, coordinate.y);
-      // console.log( 'Square'+naturalNumbers[i]+ ": "+ (rect.height/2 +rect.top));
-      // console.log(squareElement.getAttribute('id'));
-
-      i++;
-    }
-  }
-  return centerPointArray;
-}
-
-function greaterThan(val1, val2){
-  if(val1 > val2){
+function lessThan(val1, val2){
+  if(val1 < val2){
     return val1;
   }else{
     return val2;
   }
 }
 
+function determineDiameter(){
+  var height = square_div_array[0].clientHeight;
+  var width = square_div_array[0].clientWidth;
+  // how to return most correct size circle?
+  return (lessThan(height, width)-10)+'px';
+}
+
+// Untested and unused
+function findCircleCenter(circle){
+  width = circle.style.width;
+  height = circle.style.height;
+  return width/2, height/2;
+}
+
+// Oh boy this is getting messy...
+
+var circle_number = 48 ;
+// var my_div = null;
+// var mainDiv = null;
+var column_div_array = [];
+var square_div_array = [];
+var points;
+
 generateGrid(4,12);
 
 //This line of code deosn't work when inseterted in generatCricles function
-points = getGridCenterPoints(4, 12);
+points = getGridPoints(4, 12);
 
-console.log(points);
+var circleNames = generateCircles(circle_number);
 
-// Also, anycomments on my code and how to make it cleaner? It is getting 
-// super messy superfast.
 
 
 
