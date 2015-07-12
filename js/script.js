@@ -1,4 +1,9 @@
-// Makes divs draggable, taken from: http://jsfiddle.net/g6m5t8co/1/
+/*
+Chloe Eghtebas
+July 12, 2015
+*/
+
+// Makes divs draggable, taken and modified from: http://jsfiddle.net/g6m5t8co/1/
 var mydragg = function(){
     return {
         move : function(divid,xpos,ypos){
@@ -40,11 +45,52 @@ var mydragg = function(){
             var x = divid.style.left;
             var y = divid.style.top;
             var nearest_point = getNearestGridPoint(x, y);
-            divid.style.left = nearest_point.x+'px';
-            divid.style.top = nearest_point.y+'px';
+            divid.style.left = nearest_point.x + 'px';
+            divid.style.top = nearest_point.y + 'px';
         },
     }
 }();
+
+
+function containerNumber () {
+  var container_number = Math.floor((grid_rows*grid_columns)/6);
+  console.log(container_number);
+}
+
+function getBasketPoints(number_of_rows, number_of_columns){
+  var basketArray = [];
+  var naturalNumbers = naturalNumberSequence(number_of_columns*number_of_rows);
+  var i = 0; 
+  for(c= 0; c< number_of_columns; c++){
+    for(r= 0; r< number_of_rows; r++){
+      if ( !(c%3) && !(r %2) ) {
+        var squareElement = document.getElementById('Square'+naturalNumbers[i]);
+        var rect = squareElement.getBoundingClientRect();
+        // Center point of the grid:
+        // centerPointArray.push({x: rect.width/2 + rect.left, y: rect.height/2 + rect.top});
+        // Left and Top coordiates of grid
+        basketArray.push({x: rect.left, y: rect.top});
+      }
+      i++;
+    }
+  }
+  return basketArray;
+}
+
+function defineBasket() {
+  container = document.getElementById('container');
+  var square_dummy = document.getElementById("Square1");
+  for (point of basket_points) {
+    basket = document.createElement('div');
+    basket.setAttribute('id', 'Basket'+(1));
+    basket.setAttribute('style', 'position: absolute; border:3px solid black; text-align:center');
+    basket.style.left = point.x+'px';
+    basket.style.top = point.y+'px';
+    basket.style.width = square_dummy.getBoundingClientRect().width*3+'px';
+    basket.style.height = square_dummy.getBoundingClientRect().height*2+'px';
+    container.appendChild(basket);
+  }
+}
 
 // returns nearest grid point to x1 and y1
 function getNearestGridPoint(x1, y1) {
@@ -62,24 +108,6 @@ function getNearestGridPoint(x1, y1) {
   }
   return ans;
 }
-
-// x = [1, 2 , 5, 8 , 10 , 13];
-// function getNearest(y) {
-//   var i = 0;
-//   var minDiff = Math.abs(y-x[i]);
-//   var ans;
-//   for (var i = 0; i< x.length; i++) {
-//     var diff = Math.abs(y-x[i]);
-//     console.log("diff: ", diff);
-//     if( diff < minDiff ){
-//       minDiff = diff;
-//       console.log("minDiff: ", minDiff);
-//       ans = x[i];
-//     }
-    
-//   }
-//   return ans;
-// }
 
 //TODO: make border only 1 px thick
 function generateGrid(number_of_rows, number_of_columns)
@@ -139,6 +167,7 @@ function generateCircles(n){
         circleIDs.push('Circle'+ (i+1));
         circle.setAttribute('id', circleIDs[i]);
         circle.setAttribute('style', 'position: absolute; background-color: red; border-radius: 100px; border: 3px solid black');
+        // setting circle's initial position
         circle.style.top = points[i].y+'px';
         circle.style.left = points[i].x+'px';
         circle.style.width = determineDiameter();
@@ -166,7 +195,8 @@ function generateCircles(n){
 // whenever window is resized, this function is called
 function resizeCanvas() {
   var circleID;
-  points = getGridPoints(4, 12);
+  points = getGridPoints(grid_rows, grid_columns);
+  basket_points = getBasketPoints(grid_rows, grid_columns);
   var i = 0; 
   for (circleID of circleNames) {
     // recalculate circle positions
@@ -179,6 +209,8 @@ function resizeCanvas() {
     //
     var column = document.getElementById("TableColumn"+(i+1));
     column.style.fontSize = determineTextSize();
+    // 
+    defineBasket();
     i++;
   }
 }
@@ -226,7 +258,7 @@ function randomizeCircleLetters(alphabet) {
 
 // Oh boy this is getting messy...
 
-var circle_number = 48 ;
+var circle_number = 160 ;
 // var my_div = null;
 // var mainDiv = null;
 var column_div_array = [];
@@ -234,13 +266,19 @@ var square_div_array = [];
 var points;
 var hard_sort_alphabet = ["H", "K", "N", "R"];
 var easy_sort_alphabet = ["C", "D"];
+var grid_rows = 8;
+var grid_columns = 24;
 
-generateGrid(4,12);
+generateGrid(grid_rows, grid_columns);
 
 //This line of code deosn't work when inseterted in generatCricles function
-points = getGridPoints(4, 12);
+points = getGridPoints(grid_rows, grid_columns);
+
+basket_points = getBasketPoints(grid_rows, grid_columns);
 
 var circleNames = generateCircles(circle_number);
+
+var basket_dim = defineBasket();
 
 
 
