@@ -39,13 +39,15 @@ var mydragg = function(){
             document.onmousemove = function(){}
             var x = divid.style.left;
             var y = divid.style.top;
-            console.log("Answer: ", getNearestGridPoint(x, y));
+            var nearest_point = getNearestGridPoint(x, y);
+            divid.style.left = nearest_point.x+'px';
+            divid.style.top = nearest_point.y+'px';
         },
     }
 }();
 
+// returns nearest grid point to x1 and y1
 function getNearestGridPoint(x1, y1) {
-  // console.log(points);
   var current_x = parseInt(x1, 10);
   var current_y = parseInt(y1, 10);
   var i = 0;
@@ -53,10 +55,8 @@ function getNearestGridPoint(x1, y1) {
   var ans = points[0];
   for(var i = 0 ; i < points.length; i ++) {
     var dist = Math.sqrt(Math.pow(points[i].x - current_x, 2) + Math.pow(points[i].y-current_y, 2));
-    console.log("dist: ", dist);
     if(dist < minDist) {
         minDist = dist;
-        console.log("minDist: ", minDist);
         ans = points[i];
     }
   }
@@ -156,7 +156,6 @@ function generateCircles(n){
         // Creating Text
         var text = document.createTextNode(randomizeCircleLetters(hard_sort_alphabet));
         table_column.style.fontSize = determineTextSize();
-        console.log(determineDiameter());
         table_column.appendChild(text);
         circle.appendChild(table);
         container.appendChild(circle);
@@ -180,7 +179,6 @@ function resizeCanvas() {
     //
     var column = document.getElementById("TableColumn"+(i+1));
     column.style.fontSize = determineTextSize();
-    console.log(determineDiameter());
     i++;
   }
 }
