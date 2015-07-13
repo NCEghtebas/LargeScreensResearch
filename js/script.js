@@ -51,7 +51,6 @@ var mydragg = function(){
     }
 }();
 
-
 // Doesn't include 0
 function naturalNumberSequence(cardinality) {
   var a = [];
