@@ -51,15 +51,6 @@ var mydragg = function(){
     }
 }();
 
-// Doesn't include 0
-function naturalNumberSequence(cardinality) {
-  var a = [];
-  for (var i = 1; i <= cardinality; i++) {
-    a.push(i);
-  };
-  return a;
-}
-
 function lessThan(val1, val2){
   if(val1 < val2){
     return val1;
@@ -182,11 +173,10 @@ function generateGrid(number_of_rows, number_of_columns)
 
 function getGridPoints(number_of_rows, number_of_columns){
   var pointArray = [];
-  var naturalNumbers = naturalNumberSequence(number_of_columns*number_of_rows);
   var i = 0; 
   for(c= 0; c< number_of_columns; c++){
     for(r= 0; r< number_of_rows; r++){
-      var squareElement = document.getElementById('Square'+naturalNumbers[i]);
+      var squareElement = document.getElementById('Square'+(i+1));
       var rect = squareElement.getBoundingClientRect();
       // Center point of the grid:
       // centerPointArray.push({x: rect.width/2 + rect.left, y: rect.height/2 + rect.top});
@@ -317,11 +307,12 @@ function resizeCanvas() {
     var column = document.getElementById("TableColumn"+(i+1));
     column.style.fontSize = determineTextSize();
     // 
-    defineBasket();
     i++;
   }
   // resizeBaskets();
 }
+
+
 
 // Oh boy this is getting messy...
 
