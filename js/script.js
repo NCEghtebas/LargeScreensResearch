@@ -63,6 +63,48 @@ function getNearestGridPoint(x1, y1) {
   return ans;
 }
 
+
+// Doesn't include 0
+function naturalNumberSequence(cardinality) {
+  var a = [];
+  for (var i = 1; i <= cardinality; i++) {
+    a.push(i);
+  };
+  return a;
+}
+
+function lessThan(val1, val2){
+  if(val1 < val2){
+    return val1;
+  }else{
+    return val2;
+  }
+}
+
+function determineDiameter(){
+  var height = square_div_array[0].clientHeight;
+  var width = square_div_array[0].clientWidth;
+  // how to return most correct size circle?
+  return (lessThan(height, width)-5)+'px';
+}
+
+function determineTextSize(){
+  return parseInt(determineDiameter(), 10)/4 + 'px';
+}
+
+// Untested and unused
+function findCircleCenter(circle){
+  width = circle.style.width;
+  height = circle.style.height;
+  return width/2, height/2;
+}
+
+// Will later need to make sure average max distance 
+// between random letters are constrained 
+function randomizeCircleLetters(alphabet) {
+  return alphabet[Math.floor(Math.random()*alphabet.length)];
+}
+
 // x = [1, 2 , 5, 8 , 10 , 13];
 // function getNearest(y) {
 //   var i = 0;
@@ -163,10 +205,63 @@ function generateCircles(n){
     return circleIDs;
 }
 
+// returns point array for the baskets
+function getBasketPoints(number_of_rows, number_of_columns){
+  var basket_array= [];
+  // var naturalNumbers = naturalNumberSequence(number_of_columns*number_of_rows);
+  var i = 0; 
+  for(c= 0; c< number_of_columns; c++){
+    for(r= 0; r< number_of_rows; r++){
+      if ( !(c%3) && !(r %2) ) {
+        // var squareElement = document.getElementById('Square'+naturalNumbers[i]);
+        // var rect = squareElement.getBoundingClientRect();
+  //       // Center point of the grid:
+  //       // centerPointArray.push({x: rect.width/2 + rect.left, y: rect.height/2 + rect.top});
+  //       // Left and Top coordiates of grid
+  //       basket_array.push({x: rect.left, y: rect.top});
+      }
+      i++;
+    }
+  }
+  return basket_array;
+}
+
+// generates baskets
+function generateBaskets() {
+  // container = document.getElementById('container');
+  // var square_dummy = document.getElementById("Square1");
+  // var i = 0;
+  // for (point of basket_points) {
+  //   basket = document.createElement('div');
+  //   basket.setAttribute('id', 'Basket'+(i+1));
+  //   basket.setAttribute('style', 'position: absolute; border:3px solid black; text-align:center');
+  //   basket.style.left = point.x+'px';
+  //   basket.style.top = point.y+'px';
+  //   basket.style.width = square_dummy.getBoundingClientRect().width*3+'px';
+  //   basket.style.height = square_dummy.getBoundingClientRect().height*2+'px';
+  //   container.appendChild(basket);
+  //   i++;
+  // }
+}
+
+function resizeBaskets() {
+  // var square_dummy = document.getElementById("Square1");
+  // for (var i = 0; i < basket_points.length; i++) {
+  //   // recalculate basket positions
+  //   basket = document.getElementById("Basket" +(i+1));
+  //   basket.style.top = basket_points[i].y+'px';
+  //   circle.style.left = basket_points[i].x+'px'; 
+  //   // recaluculate basket dimensions
+  //   basket.style.height = square_dummy.getBoundingClientRect().width*2+'px';
+  //   basket.style.width = square_dummy.getBoundingClientRect().width*3+'px';
+  //   i++;
+  // }
+}
+
 // whenever window is resized, this function is called
 function resizeCanvas() {
   var circleID;
-  points = getGridPoints(4, 12);
+  points = getGridPoints(grid_rows, grid_columns);
   var i = 0; 
   for (circleID of circleNames) {
     // recalculate circle positions
@@ -181,52 +276,12 @@ function resizeCanvas() {
     column.style.fontSize = determineTextSize();
     i++;
   }
-}
-
-// Doesn't include 0
-function naturalNumberSequence(cardinality) {
-  var a = [];
-  for (var i = 1; i <= cardinality; i++) {
-    a.push(i);
-  };
-  return a;
-}
-
-function lessThan(val1, val2){
-  if(val1 < val2){
-    return val1;
-  }else{
-    return val2;
-  }
-}
-
-function determineDiameter(){
-  var height = square_div_array[0].clientHeight;
-  var width = square_div_array[0].clientWidth;
-  // how to return most correct size circle?
-  return (lessThan(height, width)-5)+'px';
-}
-
-function determineTextSize(){
-  return parseInt(determineDiameter(), 10)/4 + 'px';
-}
-
-// Untested and unused
-function findCircleCenter(circle){
-  width = circle.style.width;
-  height = circle.style.height;
-  return width/2, height/2;
-}
-
-// Will later need to make sure average max distance 
-// between random letters are constrained 
-function randomizeCircleLetters(alphabet) {
-  return alphabet[Math.floor(Math.random()*alphabet.length)];
+  resizeBaskets();
 }
 
 // Oh boy this is getting messy...
 
-var circle_number = 48 ;
+var circle_number = 160 ;
 // var my_div = null;
 // var mainDiv = null;
 var column_div_array = [];
@@ -234,13 +289,21 @@ var square_div_array = [];
 var points;
 var hard_sort_alphabet = ["H", "K", "N", "R"];
 var easy_sort_alphabet = ["C", "D"];
+var grid_rows = 8;
+var grid_columns = 24;
 
-generateGrid(4,12);
+generateGrid(grid_rows, grid_columns);
 
 //This line of code deosn't work when inseterted in generatCricles function
-points = getGridPoints(4, 12);
+points = getGridPoints(grid_rows, grid_columns);
 
 var circleNames = generateCircles(circle_number);
+
+basket_points =  getBasketPoints();
+
+generateBaskets();
+
+
 
 
 
