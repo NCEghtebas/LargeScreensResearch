@@ -169,10 +169,10 @@ function getGridPoints(number_of_rows, number_of_columns){
 }
 
 // Generates circles out of divs and returns array of circle ID names
-function generateCircles(n){
+function generateNCircles(n){
     container = document.getElementById('container');
     var circleIDs = [] 
-    for(i=0; i<n; i++){
+    for (i=0; i<n; i++){
         circle = document.createElement("div");
         circleIDs.push('Circle'+ (i+1));
         circle.setAttribute('id', circleIDs[i]);
@@ -209,15 +209,14 @@ function getBasketPoints(number_of_rows, number_of_columns){
   var j = 0;
   var even = [2, 4, 6, 8];
   var merged =[];
-  for(c= 0; c< number_of_columns; c++){
+  for (c= 0; c< number_of_columns; c++){
       if ( !(c%3) && !(r %2) ) {
         basket_array.push(appendBasketPointsOfColumn(c));
         j++;
         i+=8;
     }
   }
-  
-  console.log("merged: ", [].concat.apply([], basket_array));
+  // console.log("merged: ", [].concat.apply([], basket_array));
   return [].concat.apply([], basket_array);
 }
 
@@ -231,7 +230,7 @@ function appendBasketPointsOfColumn(c){
   for (m = 0 ; m < squaresInColumn.length; m ++){
     if (m%2) {
       var rectsInColumn = squaresInColumn[m].getBoundingClientRect();
-      temp_basket_array[array_index] = {x: rectsInColumn.left, y: rectsInColumn.top};
+      temp_basket_array[array_index] = {x: rectsInColumn.left, y: rectsInColumn.top };
     }
     array_index++;
   }
@@ -245,24 +244,93 @@ function generateBaskets() {
   var rect_dummy = square_dummy.getBoundingClientRect();
   var i = 0;
   for (point in basket_points) {
-    console.log("basket_points[point].x:  ", basket_points[point].x);
-    // console.log("created basket with rect: ", rect_dummy);
-    basket = document.createElement('div');
+    basket = document.createElement('div'); 
     basket.setAttribute('id', 'Basket' + (i + 1));
-    // var x2 = point.x + rect_dummy.width*3+'px';
-    // var y2 = rect_dummy.height*2+'px';
-    var x2 = basket_points[point].x + rect_dummy.width * 3 + 'px';
-    var y2 = basket_points[point].y + rect_dummy.height * 2 + 'px';
     basket.setAttribute('style', 'position: absolute; border:3px solid black; text-align:center');
     basket.style.left = basket_points[point].x + 'px';
     basket.style.top = basket_points[point].y + 'px';
-    // basket.style.bottom = y2;
-    // basket.style.right = x2;
     basket.style.width = rect_dummy.width * 3 + 'px';
     basket.style.height = rect_dummy.height * 2 + 'px';
     container.appendChild(basket);
     i++;
   }
+}
+
+function makePointsInBasket(point) {
+  var square_dummy = document.getElementById('Square2');
+  var rect_dummy = square_dummy.getBoundingClientRect();
+  var eins = {x: point.x, y: point.y};
+  var zwei = {x: point.x + rect_dummy.width, y: point.y};
+  var drei = {x: point.x + rect_dummy.width * 2, y: point.y };
+  var vier = {x: point.x, y: point.y + rect_dummy.height};
+  var funf = {x: point.x + rect_dummy.width, y: point.y + rect_dummy.height}
+  return [eins, zwei, drei, vier, funf];
+}
+
+function generateCircles2(initial_alphabet_config) {
+  var i = 0;
+  var h = 1, n = 1, k = 1, r = 1;
+  for (basket_point in basket_points) {
+    var circle_point_array = makePointsInBasket(basket_points[basket_point]);
+    for (circle_point of circle_point_array) {
+      // console.log("circle_point: ", circle_point);
+      console.log("bp: ", basket_points[basket_point], "circle_point: ", circle_point);
+      if (i < 160){
+        switch (basket_initial_alphabet2[i]) {
+          case 'H':
+              generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ h);
+              h++;
+              break;
+          case 'N':
+              generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ n);
+              n++;
+              break;
+          case 'K':
+              generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ k);
+              k++;
+              break;
+          case 'R':
+              generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ r);
+              r++;
+              break;
+        }
+      } else {
+        break;
+      }
+    }
+    // console.log(circle_point_array); 3.
+    i++;
+  }
+}
+
+function generateCirclesAtPoint(point, increment){
+    container = document.getElementById('container');
+    circle = document.createElement("div");
+    // console.log("increment: ", increment);6
+    circle.setAttribute('id', "Circle" + increment);
+    circle.setAttribute('style', 'position: absolute; background-color: red; border-radius: 100px; border: 3px solid black');
+    // setting circle's initial position
+    circle.style.top = point.y + 'px';
+    circle.style.left = point.x + 'px';
+    // console.log(increment ,"point.x: ", point.x  ," point.y: ", point.y);
+    circle.style.width = determineDiameter();
+    circle.style.height = determineDiameter();
+    // Making Circle Draggable
+    circle.setAttribute('onmousedown' ,'mydragg.startMoving(this,"container",event);');
+    circle.setAttribute('onmouseup', 'mydragg.stopMoving(this, "container");');
+    // Creating tables for centering text in circles
+    var table = document.createElement("table");
+    table.setAttribute('id', "Table" + increment);
+    table.setAttribute('style', 'width: 100%; height:100%; text-align: center;');
+    var table_row = document.createElement('tr'), table_column = document.createElement('td');
+    table_column.setAttribute("id", "TableColumn" +  increment);
+    table.appendChild(table_row); table_row.appendChild(table_column);
+    // Creating Text
+    var text = document.createTextNode(increment);//randomizeCircleLetters(hard_sort_alphabet));
+    table_column.style.fontSize = determineTextSize();
+    table_column.appendChild(text);
+    circle.appendChild(table);
+    container.appendChild(circle);
 }
 
 function resizeBaskets() {
@@ -301,10 +369,10 @@ function resizeCanvas() {
   // resizeBaskets();
 }
 
-
-
 // Oh boy this is getting messy...
 
+// fix ordering
+var basket_initial_alphabet2 = [ 'H', 'R', 'K', 'N', 'K', 'H', 'R', 'K', 'K', 'H', 'R', 'H', 'N', 'K', 'N', 'R', 'R', 'N', 'H', 'N', 'K', 'N', 'H', 'N','H', 'R', 'K', 'R', 'N', 'R', 'K', 'H'];
 var circle_number = 160 ;
 // var my_div = null;
 // var mainDiv = null;
@@ -315,23 +383,24 @@ var hard_sort_alphabet = ["H", "K", "N", "R"];
 var easy_sort_alphabet = ["C", "D"];
 var grid_rows = 8;
 var grid_columns = 24;
+var initial_alphabet1 = ['H', 'K', 'H', 'R'];
 
 generateGrid(grid_rows, grid_columns);
 
 //This line of code deosn't work when inseterted in generatCricles function
 points = getGridPoints(grid_rows, grid_columns);
 
-var circleNames = generateCircles(circle_number);
-
 var basket_points =  getBasketPoints(grid_rows, grid_columns);
 // console.log("basket_points[1].x : " , basket_points[1].x);
-
 
 generateBaskets();
 
 // console.log("basket_points: ", basket_points.length, "points: ", points.length );
 
+// want to generate circles after the baskets
+var circleNames = generateCircles2(circle_number);
 
+// TODO fix physics have drag highlighting bug... 
 
 
 
