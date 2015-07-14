@@ -88,26 +88,6 @@ function containerNumber () {
   console.log(container_number);
 }
 
-function getBasketPoints(number_of_rows, number_of_columns){
-  var basketArray = [];
-  var naturalNumbers = naturalNumberSequence(number_of_columns*number_of_rows);
-  var i = 0; 
-  for(c= 0; c< number_of_columns; c++){
-    for(r= 0; r< number_of_rows; r++){
-      if ( !(c%3) && !(r %2) ) {
-        var squareElement = document.getElementById('Square'+naturalNumbers[i]);
-        var rect = squareElement.getBoundingClientRect();
-        // Center point of the grid:
-        // centerPointArray.push({x: rect.width/2 + rect.left, y: rect.height/2 + rect.top});
-        // Left and Top coordiates of grid
-        basketArray.push({x: rect.left, y: rect.top});
-      }
-      i++;
-    }
-  }
-  return basketArray;
-}
-
 function defineBasket() {
   container = document.getElementById('container');
   var square_dummy = document.getElementById("Square1");
@@ -225,30 +205,37 @@ function generateCircles(n){
 // returns point array for the baskets
 function getBasketPoints(number_of_rows, number_of_columns){
   var basket_array= [];
-  // var naturalNumbers = naturalNumberSequence(number_of_columns*number_of_rows);
   var i = 0; 
   var j = 0;
+  var even = [2, 4, 6, 8];
+  var merged =[];
   for(c= 0; c< number_of_columns; c++){
-    for(r= 0; r< number_of_rows; r++){
       if ( !(c%3) && !(r %2) ) {
-        // console.log("r: ",r,"c: ", c)
-        var squareElement = document.getElementById('Square'+(i+1));
-        var columnElement = document.getElementById('Column'+ (c+1));
-        // console.log('Square'+(i+1));//"x: ", x, "y: ", y);
-        var rect = squareElement.getBoundingClientRect();
-        // console.log(rect);
-  //       // Center point of the grid:
-  //       // centerPointArray.push({x: rect.width/2 + rect.left, y: rect.height/2 + rect.top});
-  //       // Left and Top coordiates of grid
-        // basket_array.push({x: rect.left, y: rect.top});
-        basket_array[j] = {x: rect.left, y: rect.top};
-        console.log(basket_array[j].x, basket_array[j].y);
+        basket_array.push(appendBasketPointsOfColumn(c));
         j++;
-        i+=2;
-      }
+        i+=8;
     }
   }
-  return basket_array;
+  
+  console.log("merged: ", [].concat.apply([], basket_array));
+  return [].concat.apply([], basket_array);
+}
+
+// basket_array is the section of a point array to append points to 
+// n is teh current column number
+function appendBasketPointsOfColumn(c){
+  // console.log("c:", c);
+  var temp_basket_array = [];
+  var squaresInColumn = document.getElementById('Column'+ (c+1)).childNodes;
+  var array_index = 0;
+  for (m = 0 ; m < squaresInColumn.length; m ++){
+    if (m%2) {
+      var rectsInColumn = squaresInColumn[m].getBoundingClientRect();
+      temp_basket_array[array_index] = {x: rectsInColumn.left, y: rectsInColumn.top};
+    }
+    array_index++;
+  }
+  return temp_basket_array;
 }
 
 // generates baskets
@@ -257,20 +244,22 @@ function generateBaskets() {
   var square_dummy = document.getElementById("Square1");
   var rect_dummy = square_dummy.getBoundingClientRect();
   var i = 0;
-  for (point of basket_points) {
-    console.log("point: ", point);
+  for (point in basket_points) {
+    console.log("basket_points[point].x:  ", basket_points[point].x);
     // console.log("created basket with rect: ", rect_dummy);
     basket = document.createElement('div');
-    basket.setAttribute('id', 'Basket'+(i+1));
+    basket.setAttribute('id', 'Basket' + (i + 1));
     // var x2 = point.x + rect_dummy.width*3+'px';
     // var y2 = rect_dummy.height*2+'px';
+    var x2 = basket_points[point].x + rect_dummy.width * 3 + 'px';
+    var y2 = basket_points[point].y + rect_dummy.height * 2 + 'px';
     basket.setAttribute('style', 'position: absolute; border:3px solid black; text-align:center');
-    basket.style.left = point.x+'px';
-    basket.style.top = point.y+'px';
+    basket.style.left = basket_points[point].x + 'px';
+    basket.style.top = basket_points[point].y + 'px';
     // basket.style.bottom = y2;
     // basket.style.right = x2;
-    // basket.style.width = rect_dummy.width*3+'px';
-    // basket.style.height = rect_dummy.height*2+'px';
+    basket.style.width = rect_dummy.width * 3 + 'px';
+    basket.style.height = rect_dummy.height * 2 + 'px';
     container.appendChild(basket);
     i++;
   }
@@ -335,7 +324,8 @@ points = getGridPoints(grid_rows, grid_columns);
 var circleNames = generateCircles(circle_number);
 
 var basket_points =  getBasketPoints(grid_rows, grid_columns);
-console.log("basket.points" , basket_points);
+// console.log("basket_points[1].x : " , basket_points[1].x);
+
 
 generateBaskets();
 
