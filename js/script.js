@@ -70,22 +70,10 @@ function determineTextSize(){
   return parseInt(determineDiameter(), 10)/4 + 'px';
 }
 
-// Untested and unused
-function findCircleCenter(circle){
-  width = circle.style.width;
-  height = circle.style.height;
-  return width/2, height/2;
-}
-
 // Will later need to make sure average max distance 
 // between random letters are constrained 
 function randomizeCircleLetters(alphabet) {
   return alphabet[Math.floor(Math.random()*alphabet.length)];
-}
-
-function containerNumber () {
-  var container_number = Math.floor((grid_rows*grid_columns)/6);
-  console.log(container_number);
 }
 
 function defineBasket() {
@@ -158,8 +146,6 @@ function getGridPoints(number_of_rows, number_of_columns){
     for(r= 0; r< number_of_rows; r++){
       var squareElement = document.getElementById('Square'+(i+1));
       var rect = squareElement.getBoundingClientRect();
-      // Center point of the grid:
-      // centerPointArray.push({x: rect.width/2 + rect.left, y: rect.height/2 + rect.top});
       // Left and Top coordiates of grid
       pointArray.push({x: rect.left, y: rect.top});
       i++;
@@ -216,14 +202,12 @@ function getBasketPoints(number_of_rows, number_of_columns){
         i+=8;
     }
   }
-  // console.log("merged: ", [].concat.apply([], basket_array));
   return [].concat.apply([], basket_array);
 }
 
 // basket_array is the section of a point array to append points to 
 // n is teh current column number
 function appendBasketPointsOfColumn(c){
-  // console.log("c:", c);
   var temp_basket_array = [];
   var squaresInColumn = document.getElementById('Column'+ (c+1)).childNodes;
   var array_index = 0;
@@ -279,6 +263,9 @@ function generateCircles2(initial_alphabet_config) {
         switch (basket_initial_alphabet2[i]) {
           case 'H':
               generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ h);
+              if ( !(i%4) || !(i%5)) {
+
+              }
               h++;
               break;
           case 'N':
@@ -298,7 +285,7 @@ function generateCircles2(initial_alphabet_config) {
         break;
       }
     }
-    // console.log(circle_point_array); 3.
+    // console.log(circle_point_array);
     i++;
   }
 }
@@ -326,7 +313,7 @@ function generateCirclesAtPoint(point, increment){
     table_column.setAttribute("id", "TableColumn" +  increment);
     table.appendChild(table_row); table_row.appendChild(table_column);
     // Creating Text
-    var text = document.createTextNode(increment);//randomizeCircleLetters(hard_sort_alphabet));
+    var text = document.createTextNode(increment);
     table_column.style.fontSize = determineTextSize();
     table_column.appendChild(text);
     circle.appendChild(table);
@@ -391,11 +378,8 @@ generateGrid(grid_rows, grid_columns);
 points = getGridPoints(grid_rows, grid_columns);
 
 var basket_points =  getBasketPoints(grid_rows, grid_columns);
-// console.log("basket_points[1].x : " , basket_points[1].x);
 
 generateBaskets();
-
-// console.log("basket_points: ", basket_points.length, "points: ", points.length );
 
 // want to generate circles after the baskets
 var circleNames = generateCircles2(circle_number);
