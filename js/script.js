@@ -251,33 +251,41 @@ function makePointsInBasket(point) {
   return [eins, zwei, drei, vier, funf];
 }
 
+function changeCircleColor(i, letter) {
+  if ( !(letter%4) || !(letter%5)) {
+    var temp_circle = document.getElementById('Circle'+basket_initial_alphabet2[i] +letter);
+    temp_circle.style.backgroundColor= 'red';
+    
+    // console.log("The circle: ", basket_initial_alphabet2[i]+h, " should be a probability "  );
+  }
+}
+
 function generateCircles2(initial_alphabet_config) {
   var i = 0;
   var h = 1, n = 1, k = 1, r = 1;
   for (basket_point in basket_points) {
     var circle_point_array = makePointsInBasket(basket_points[basket_point]);
     for (circle_point of circle_point_array) {
-      // console.log("circle_point: ", circle_point);
-      console.log("bp: ", basket_points[basket_point], "circle_point: ", circle_point);
       if (i < 160){
         switch (basket_initial_alphabet2[i]) {
           case 'H':
               generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ h);
-              if ( !(i%4) || !(i%5)) {
-
-              }
+              changeCircleColor(i, h);
               h++;
               break;
           case 'N':
               generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ n);
+              changeCircleColor(i, n);
               n++;
               break;
           case 'K':
               generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ k);
+              changeCircleColor(i, k);
               k++;
               break;
           case 'R':
               generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ r);
+              changeCircleColor(i, r);
               r++;
               break;
         }
@@ -295,7 +303,7 @@ function generateCirclesAtPoint(point, increment){
     circle = document.createElement("div");
     // console.log("increment: ", increment);6
     circle.setAttribute('id', "Circle" + increment);
-    circle.setAttribute('style', 'position: absolute; background-color: red; border-radius: 100px; border: 3px solid black');
+    circle.setAttribute('style', 'position: absolute; background-color: green; border-radius: 100px; border: 3px solid black');
     // setting circle's initial position
     circle.style.top = point.y + 'px';
     circle.style.left = point.x + 'px';
@@ -334,6 +342,7 @@ function resizeBaskets() {
   // }
 }
 
+// TODO: fix for circle, text, and basket
 // whenever window is resized, this function is called
 function resizeCanvas() {
   var circleID;
@@ -359,7 +368,7 @@ function resizeCanvas() {
 // Oh boy this is getting messy...
 
 // fix ordering
-var basket_initial_alphabet2 = [ 'H', 'R', 'K', 'N', 'K', 'H', 'R', 'K', 'K', 'H', 'R', 'H', 'N', 'K', 'N', 'R', 'R', 'N', 'H', 'N', 'K', 'N', 'H', 'N','H', 'R', 'K', 'R', 'N', 'R', 'K', 'H'];
+var basket_initial_alphabet2 = [ 'H', 'R', 'H', 'N','K', 'H', 'R', 'K','R', 'N', 'H', 'R', 'N', 'K', 'N', 'H','R', 'N', 'H', 'N','K', 'R', 'K', 'R','H', 'K', 'N', 'K','N', 'R', 'K', 'H'];
 var circle_number = 160 ;
 // var my_div = null;
 // var mainDiv = null;
