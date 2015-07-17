@@ -255,12 +255,16 @@ function changeCircleColor(i, letter) {
   if ( !(letter%4) || !(letter%5)) {
     var temp_circle = document.getElementById('Circle'+basket_initial_alphabet2[i] +letter);
     temp_circle.style.backgroundColor= 'red';
-    
+    // var column = document.getElementById('TableColumnH'+ letter);
+    // console.log(letter-1);
+    // var text = column.childNodes;
+              // // TODO make value probabalistic
+              // text[0].nodeValue = "new value";
     // console.log("The circle: ", basket_initial_alphabet2[i]+h, " should be a probability "  );
   }
 }
 
-function generateCircles2(initial_alphabet_config) {
+function generateTextInCircles(initial_alphabet_config) {
   var i = 0;
   var h = 1, n = 1, k = 1, r = 1;
   for (basket_point in basket_points) {
@@ -270,7 +274,32 @@ function generateCircles2(initial_alphabet_config) {
         switch (basket_initial_alphabet2[i]) {
           case 'H':
               generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ h);
-              changeCircleColor(i, h);
+              if ( !(h%4) || !(h%5) ) { 
+                var column = document.getElementById('TableColumnH'+ h);
+                var text = column.childNodes;
+                var rand_letter = hard_sort_alphabet[Math.floor(Math.random()*4)];
+                console.log(rand_letter);
+                // console.log(text[0].nodeValue.slice(1));
+                switch (text[0].nodeValue[0]) {
+                  case 'H':
+                    text[0].nodeValue = rand_letter + h;
+                    console.log("case H: ", text[0].nodeValue);
+                    changeCircleColor(i, h);
+                    h++;
+                  case 'N':
+                    text[0].nodeValue = rand_letter + n;
+                    console.log("Case N: ",text[0].nodeValue);
+                    n++;
+                  case 'K':
+                    text[0].nodeValue = rand_letter + k;
+                    console.log("",text[0].nodeValue);
+                    k++;
+                  case 'R':
+                    text[0].nodeValue = rand_letter + r;
+                    console.log(text[0].nodeValue);
+                    r++;
+                }
+              }
               h++;
               break;
           case 'N':
@@ -391,7 +420,7 @@ var basket_points =  getBasketPoints(grid_rows, grid_columns);
 generateBaskets();
 
 // want to generate circles after the baskets
-var circleNames = generateCircles2(circle_number);
+var circleNames = generateTextInCircles(circle_number);
 
 // TODO fix physics have drag highlighting bug... 
 
