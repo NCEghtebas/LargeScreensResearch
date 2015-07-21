@@ -251,78 +251,176 @@ function makePointsInBasket(point) {
   return [eins, zwei, drei, vier, funf];
 }
 
-function changeCircleColor(i, letter) {
-  if ( !(letter%4) || !(letter%5)) {
-    var temp_circle = document.getElementById('Circle'+basket_initial_alphabet2[i] +letter);
+function changeCircleColor(letter, number) {
+    var temp_circle = document.getElementById('Circle'+ letter + number);
     temp_circle.style.backgroundColor= 'red';
-    // var column = document.getElementById('TableColumnH'+ letter);
-    // console.log(letter-1);
-    // var text = column.childNodes;
-              // // TODO make value probabalistic
-              // text[0].nodeValue = "new value";
-    // console.log("The circle: ", basket_initial_alphabet2[i]+h, " should be a probability "  );
-  }
 }
 
-function generateTextInCircles(initial_alphabet_config) {
+// from http://stackoverflow.com/questions/8877249/generate-random-integers-with-probabilities
+function getRandom (results) {
+    var num = Math.random(),
+        s = 0,
+        lastIndex = weights.length - 1;
+
+    for (var i = 0; i < lastIndex; ++i) {
+        s += weights[i];
+        if (num < s) {
+            return results[i];
+        }
+    }
+    return results[lastIndex];
+};
+
+// TODO: Refactor
+function generateAllCircles(initial_alphabet_config) {
   var i = 0;
   var h = 1, n = 1, k = 1, r = 1;
+  // for each basket point
   for (basket_point in basket_points) {
+    // create points to place the circles
     var circle_point_array = makePointsInBasket(basket_points[basket_point]);
+    // go through all the circle points and place circles
+    var last_two = circle_point_array.slice( Math.max(circle_point_array.length-2,1));
     for (circle_point of circle_point_array) {
       if (i < 160){
         switch (basket_initial_alphabet2[i]) {
-          case 'H':
-              generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ h);
-              if ( !(h%4) || !(h%5) ) { 
-                var column = document.getElementById('TableColumnH'+ h);
-                var text = column.childNodes;
-                var rand_letter = hard_sort_alphabet[Math.floor(Math.random()*4)];
-                console.log(rand_letter);
-                // console.log(text[0].nodeValue.slice(1));
-                switch (text[0].nodeValue[0]) {
-                  case 'H':
-                    text[0].nodeValue = rand_letter + h;
-                    console.log("case H: ", text[0].nodeValue);
-                    changeCircleColor(i, h);
-                    h++;
-                  case 'N':
-                    text[0].nodeValue = rand_letter + n;
-                    console.log("Case N: ",text[0].nodeValue);
-                    n++;
-                  case 'K':
-                    text[0].nodeValue = rand_letter + k;
-                    console.log("",text[0].nodeValue);
-                    k++;
-                  case 'R':
-                    text[0].nodeValue = rand_letter + r;
-                    console.log(text[0].nodeValue);
-                    r++;
-                }
+          case 'H':2
+            // if this h circle being placed is the 4rth or 5th circle
+            if ( last_two.indexOf(circle_point) != -1 ) { 
+              // make this circle a random letter
+              var rand_letter = getRandom(hard_sort_alphabet);
+              switch (rand_letter) {
+                case 'H':
+                  generateCirclesAtPoint(circle_point, "H"+ h);
+                  changeCircleColor("H", h);
+                  h++;
+                  break;
+                case 'N':
+                  generateCirclesAtPoint(circle_point, "N"+ n);
+                  changeCircleColor("N", n);
+                  n++;
+                  break;
+                case 'K':
+                  generateCirclesAtPoint(circle_point, "K"+ k);
+                  changeCircleColor("K", k);
+                  k++;
+                  break;
+                case 'R':
+                  generateCirclesAtPoint(circle_point, "R"+ r);
+                  changeCircleColor("R", r);
+                  r++;
+                  break;
               }
+            } else {
+              // else just place a regular circle here
+              generateCirclesAtPoint(circle_point, "H"+ h);
               h++;
               break;
+            }
           case 'N':
-              generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ n);
-              changeCircleColor(i, n);
+            // if this n circle being placed is the 4rth or 5th circle
+            if ( last_two.indexOf(circle_point) != -1 ) { 
+              // make this circle a random letter and initialize it as red
+              var rand_letter = getRandom(hard_sort_alphabet);
+              switch (rand_letter) {
+                case 'H':
+                  generateCirclesAtPoint(circle_point, "H"+ h);
+                  changeCircleColor("H", h);
+                  h++;
+                  break;
+                case 'N':
+                  generateCirclesAtPoint(circle_point, "N"+ n);
+                  changeCircleColor("N", n);
+                  n++;
+                  break;
+                case 'K':
+                  generateCirclesAtPoint(circle_point, "K"+ k);
+                  changeCircleColor("K", k);
+                  k++;
+                  break;
+                case 'R':
+                  generateCirclesAtPoint(circle_point, "R"+ r);
+                  changeCircleColor("R", r);
+                  r++;
+                  break;
+              }
+            } else {
+              // else just place a regular circle here
+              generateCirclesAtPoint(circle_point, "N"+ n);
               n++;
               break;
+            }
           case 'K':
-              generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ k);
-              changeCircleColor(i, k);
+            // if this n circle being placed is the 4rth or 5th circle
+            if ( last_two.indexOf(circle_point) != -1 ) { 
+              // make this circle a random letter and initialize it as red
+              var rand_letter = getRandom(hard_sort_alphabet);
+              switch (rand_letter) {
+                case 'H':
+                  generateCirclesAtPoint(circle_point, "H"+ h);
+                  changeCircleColor("H", h);
+                  h++;
+                  break;
+                case 'N':
+                  generateCirclesAtPoint(circle_point, "N"+ n);
+                  changeCircleColor("N", n);
+                  n++;
+                  break;
+                case 'K':
+                  generateCirclesAtPoint(circle_point, "K"+ k);
+                  changeCircleColor("K", k);
+                  k++;
+                  break;
+                case 'R':
+                  generateCirclesAtPoint(circle_point, "R"+ r);
+                  changeCircleColor("R", r);
+                  r++;
+                  break;
+              }
+            } else {
+              // else just place a regular circle here
+              generateCirclesAtPoint(circle_point, "K"+ k);
               k++;
               break;
+            }
           case 'R':
-              generateCirclesAtPoint(circle_point, basket_initial_alphabet2[i]+ r);
-              changeCircleColor(i, r);
+            // if this n circle being placed is the 4rth or 5th circle
+            if ( last_two.indexOf(circle_point) != -1 ) { 
+              // make this circle a random letter and initialize it as red
+              var rand_letter = getRandom(hard_sort_alphabet);
+              switch (rand_letter) {
+                case 'H':
+                  generateCirclesAtPoint(circle_point, "H"+ h);
+                  changeCircleColor("H", h);
+                  h++;
+                  break;
+                case 'N':
+                  generateCirclesAtPoint(circle_point, "N"+ n);
+                  changeCircleColor("N", n);
+                  n++;
+                  break;
+                case 'K':
+                  generateCirclesAtPoint(circle_point, "K"+ k);
+                  changeCircleColor("K", k);
+                  k++;
+                  break;
+                case 'R':
+                  generateCirclesAtPoint(circle_point, "R"+ r);
+                  changeCircleColor("R", r);;
+                  r++;
+                  break;
+              }
+            } else {
+              // else just place a regular circle here
+              generateCirclesAtPoint(circle_point, "R"+ r);
               r++;
               break;
+            }
         }
       } else {
         break;
       }
     }
-    // console.log(circle_point_array);
     i++;
   }
 }
@@ -336,7 +434,6 @@ function generateCirclesAtPoint(point, increment){
     // setting circle's initial position
     circle.style.top = point.y + 'px';
     circle.style.left = point.x + 'px';
-    // console.log(increment ,"point.x: ", point.x  ," point.y: ", point.y);
     circle.style.width = determineDiameter();
     circle.style.height = determineDiameter();
     // Making Circle Draggable
@@ -408,7 +505,14 @@ var hard_sort_alphabet = ["H", "K", "N", "R"];
 var easy_sort_alphabet = ["C", "D"];
 var grid_rows = 8;
 var grid_columns = 24;
-var initial_alphabet1 = ['H', 'K', 'H', 'R'];
+
+// equal weights for chooseing random letter
+var weights = [0.25, 0.25, 0.25, 0.25];
+// could weight each random differently.
+var h_weight = [0.1, 0.3, 0.3, 0.3];
+var k_weight = [0.3, 0.1, 0.3, 0.3];
+var n_weight = [0.3, 0.3, 0.1, 0.3];
+var r_weight = [0.3, 0.3, 0.3, 0.1];
 
 generateGrid(grid_rows, grid_columns);
 
@@ -420,9 +524,9 @@ var basket_points =  getBasketPoints(grid_rows, grid_columns);
 generateBaskets();
 
 // want to generate circles after the baskets
-var circleNames = generateTextInCircles(circle_number);
+var circleNames = generateAllCircles(circle_number);
 
-// TODO fix physics have drag highlighting bug... 
+// TODO fix physics dragging/highlighting issue... 
 
 
 
