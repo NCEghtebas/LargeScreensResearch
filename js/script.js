@@ -5,53 +5,96 @@ July 12, 2015
 
 // Makes divs draggable, taken and modified from: http://jsfiddle.net/g6m5t8co/1/
 var mydragg = function(){
-    return {
-        move : function(divid,xpos,ypos){
-            divid.style.left = xpos + 'px';
-            divid.style.top = ypos + 'px';
-        },
-        startMoving : function(divid,container,evt){
-            evt = evt || window.event;
-            var posX = evt.clientX,
-                posY = evt.clientY,
-            divTop = divid.style.top,
-            divLeft = divid.style.left,
-            eWi = parseInt(divid.style.width),
-            eHe = parseInt(divid.style.height),
-            cWi = parseInt(document.getElementById(container).style.width),
-            cHe = parseInt(document.getElementById(container).style.height);
-            document.getElementById(container).style.cursor='move';
-            divTop = divTop.replace('px','');
-            divLeft = divLeft.replace('px','');
-            var diffX = posX - divLeft,
-                diffY = posY - divTop;
-            document.onmousemove = function(evt){
-                evt = evt || window.event;
-                var posX = evt.clientX,
-                    posY = evt.clientY,
-                    aX = posX - diffX,
-                    aY = posY - diffY;
-                    if (aX < 0) aX = 0;
-                    if (aY < 0) aY = 0;
-                    if (aX + eWi > cWi) aX = cWi - eWi;
-                    if (aY + eHe > cHe) aY = cHe -eHe;
-                mydragg.move(divid,aX,aY);
-            }
-        },
-        stopMoving : function(divid, container){
-            var a = document.createElement('script');
-            document.getElementById(container).style.cursor='default';
-            document.onmousemove = function(){}
-            var x = divid.style.left;
-            var y = divid.style.top;
-            var nearest_point = getNearestGridPoint(x, y);
-            divid.style.left = nearest_point.x + 'px';
-            divid.style.top = nearest_point.y + 'px';
-        },
-    }
+  return {
+    move : function(divid,xpos,ypos){
+      divid.style.left = xpos + 'px';
+      divid.style.top = ypos + 'px';
+    },
+    startMoving : function(divid,container,evt){
+      evt = evt || window.event;
+      var posX = evt.clientX,
+          posY = evt.clientY,
+      divTop = divid.style.top,
+      divLeft = divid.style.left,
+      eWi = parseInt(divid.style.width),
+      eHe = parseInt(divid.style.height),
+      cWi = parseInt(document.getElementById(container).style.width),
+      cHe = parseInt(document.getElementById(container).style.height);
+      document.getElementById(container).style.cursor='move';
+      divTop = divTop.replace('px','');
+      divLeft = divLeft.replace('px','');
+      var diffX = posX - divLeft,
+          diffY = posY - divTop;
+      document.onmousemove = function(evt){
+        evt = evt || window.event;
+        var posX = evt.clientX,
+            posY = evt.clientY,
+            aX = posX - diffX,
+            aY = posY - diffY;
+            if (aX < 0) aX = 0;
+            if (aY < 0) aY = 0;
+            if (aX + eWi > cWi) aX = cWi - eWi;
+            if (aY + eHe > cHe) aY = cHe -eHe;
+        mydragg.move(divid,aX,aY);
+      }
+    },
+    stopMoving : function(divid, container){
+      var a = document.createElement('script');
+      document.getElementById(container).style.cursor='default';
+      document.onmousemove = function(){}
+      checkColor(divid);
+      var x = divid.style.left;
+      var y = divid.style.top;
+      var nearest_point = getNearestGridPoint(x, y);
+      divid.style.left = nearest_point.x + 'px';
+      divid.style.top = nearest_point.y + 'px';
+    },
+  }
 }();
 
-function lessThan(val1, val2){
+function checkColor(circle) { 
+  var circle_label = circle.id.slice(6,7);
+  var circle_number = circle.id.slice(7, circle.id.length);
+  // console.log("circle number: ",circle_number);
+  var basket_label = circleInBasket(circle);
+  // console.log(basket_label);
+  if (circle_label == basket_label) {
+    // make circle color green
+    changeCircleColorToGreen(circle_label, circle_number);
+    console.log("green");
+  } else {
+    // make circle color red
+    changeCircleColorToRed(circle_label, circle_number);
+    console.log("red");
+  }
+}
+
+// Returns id of basket dependign on circles coordinates
+function circleInBasket(circle) {
+  var xp = parseInt(circle.style.left, 10)+1;
+  var yp = parseInt(circle.style.top, 10)+1;
+  container = document.getElementById('container');
+  var square_dummy = document.getElementById("Square1");
+  var rect_dummy = square_dummy.getBoundingClientRect();
+  var i = 0;
+  for (point in basket_points) {
+    // console.log(point);
+    x1 = (basket_points[point].x);
+    y1 = (basket_points[point].y);
+    x2 = x1 + rect_dummy.width * 3;
+    y2 = y1 + rect_dummy.height * 2;
+    // console.log( "x1: ", x1 , " <= xp: ", xp ,  " < x2: ", x2, " evaluates to: ", (x1 <= xp) && (xp < x2));
+    // console.log( "y1: ", y1 , " <= yp: ", yp ,  " < y2: ", y2, " evaluates to: ", (y1 <= yp) && (yp < y2));
+    // console.log( "end result: ", ( (x1 <= xp) && (xp < x2) ) && ( (y1 <= yp) && (yp < y2) ));
+    if ( ( (x1 <= xp) && (xp < x2) ) && ( (y1 <= yp) && (yp < y2) ) ) {
+      // console.log(basket_initial_alphabet2[i]);
+      return basket_initial_alphabet2[i];
+    }
+    i++;
+  }
+}
+
+function lessThan(val1, val2) {
   if(val1 < val2){
     return val1;
   }else{
@@ -59,14 +102,14 @@ function lessThan(val1, val2){
   }
 }
 
-function determineDiameter(){
+function determineDiameter() {
   var height = square_div_array[0].clientHeight;
   var width = square_div_array[0].clientWidth;
   // how to return most correct size circle?
   return (lessThan(height, width)-5)+'px';
 }
 
-function determineTextSize(){
+function determineTextSize() {
   return parseInt(determineDiameter(), 10)/4 + 'px';
 }
 
@@ -74,21 +117,6 @@ function determineTextSize(){
 // between random letters are constrained 
 function randomizeCircleLetters(alphabet) {
   return alphabet[Math.floor(Math.random()*alphabet.length)];
-}
-
-function defineBasket() {
-  container = document.getElementById('container');
-  var square_dummy = document.getElementById("Square1");
-  for (point of basket_points) {
-    basket = document.createElement('div');
-    basket.setAttribute('id', 'Basket'+(1));
-    basket.setAttribute('style', 'position: absolute; border:3px solid black; text-align:center');
-    basket.style.left = point.x+'px';
-    basket.style.top = point.y+'px';
-    basket.style.width = square_dummy.getBoundingClientRect().width*3+'px';
-    basket.style.height = square_dummy.getBoundingClientRect().height*2+'px';
-    container.appendChild(basket);
-  }
 }
 
 // returns nearest grid point to x1 and y1
@@ -251,9 +279,14 @@ function makePointsInBasket(point) {
   return [eins, zwei, drei, vier, funf];
 }
 
-function changeCircleColor(letter, number) {
+function changeCircleColorToRed(letter, number) {
     var temp_circle = document.getElementById('Circle'+ letter + number);
     temp_circle.style.backgroundColor= 'red';
+}
+
+function changeCircleColorToGreen(letter, number) {
+    var temp_circle = document.getElementById('Circle'+ letter + number);
+    temp_circle.style.backgroundColor= 'green';
 }
 
 // from http://stackoverflow.com/questions/8877249/generate-random-integers-with-probabilities
@@ -292,22 +325,22 @@ function generateAllCircles(initial_alphabet_config) {
               switch (rand_letter) {
                 case 'H':
                   generateCirclesAtPoint(circle_point, "H"+ h);
-                  changeCircleColor("H", h);
+                  changeCircleColorToRed("H", h);
                   h++;
                   break;
                 case 'N':
                   generateCirclesAtPoint(circle_point, "N"+ n);
-                  changeCircleColor("N", n);
+                  changeCircleColorToRed("N", n);
                   n++;
                   break;
                 case 'K':
                   generateCirclesAtPoint(circle_point, "K"+ k);
-                  changeCircleColor("K", k);
+                  changeCircleColorToRed("K", k);
                   k++;
                   break;
                 case 'R':
                   generateCirclesAtPoint(circle_point, "R"+ r);
-                  changeCircleColor("R", r);
+                  changeCircleColorToRed("R", r);
                   r++;
                   break;
               }
@@ -325,22 +358,22 @@ function generateAllCircles(initial_alphabet_config) {
               switch (rand_letter) {
                 case 'H':
                   generateCirclesAtPoint(circle_point, "H"+ h);
-                  changeCircleColor("H", h);
+                  changeCircleColorToRed("H", h);
                   h++;
                   break;
                 case 'N':
                   generateCirclesAtPoint(circle_point, "N"+ n);
-                  changeCircleColor("N", n);
+                  changeCircleColorToRed("N", n);
                   n++;
                   break;
                 case 'K':
                   generateCirclesAtPoint(circle_point, "K"+ k);
-                  changeCircleColor("K", k);
+                  changeCircleColorToRed("K", k);
                   k++;
                   break;
                 case 'R':
                   generateCirclesAtPoint(circle_point, "R"+ r);
-                  changeCircleColor("R", r);
+                  changeCircleColorToRed("R", r);
                   r++;
                   break;
               }
@@ -358,22 +391,22 @@ function generateAllCircles(initial_alphabet_config) {
               switch (rand_letter) {
                 case 'H':
                   generateCirclesAtPoint(circle_point, "H"+ h);
-                  changeCircleColor("H", h);
+                  changeCircleColorToRed("H", h);
                   h++;
                   break;
                 case 'N':
                   generateCirclesAtPoint(circle_point, "N"+ n);
-                  changeCircleColor("N", n);
+                  changeCircleColorToRed("N", n);
                   n++;
                   break;
                 case 'K':
                   generateCirclesAtPoint(circle_point, "K"+ k);
-                  changeCircleColor("K", k);
+                  changeCircleColorToRed("K", k);
                   k++;
                   break;
                 case 'R':
                   generateCirclesAtPoint(circle_point, "R"+ r);
-                  changeCircleColor("R", r);
+                  changeCircleColorToRed("R", r);
                   r++;
                   break;
               }
@@ -391,22 +424,22 @@ function generateAllCircles(initial_alphabet_config) {
               switch (rand_letter) {
                 case 'H':
                   generateCirclesAtPoint(circle_point, "H"+ h);
-                  changeCircleColor("H", h);
+                  changeCircleColorToRed("H", h);
                   h++;
                   break;
                 case 'N':
                   generateCirclesAtPoint(circle_point, "N"+ n);
-                  changeCircleColor("N", n);
+                  changeCircleColorToRed("N", n);
                   n++;
                   break;
                 case 'K':
                   generateCirclesAtPoint(circle_point, "K"+ k);
-                  changeCircleColor("K", k);
+                  changeCircleColorToRed("K", k);
                   k++;
                   break;
                 case 'R':
                   generateCirclesAtPoint(circle_point, "R"+ r);
-                  changeCircleColor("R", r);;
+                  changeCircleColorToRed("R", r);;
                   r++;
                   break;
               }
@@ -449,6 +482,7 @@ function generateCirclesAtPoint(point, increment){
     // Creating Text
     var text = document.createTextNode(increment);
     table_column.style.fontSize = determineTextSize();
+    // Adding everything
     table_column.appendChild(text);
     circle.appendChild(table);
     container.appendChild(circle);
