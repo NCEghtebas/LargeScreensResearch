@@ -94,21 +94,6 @@ function circleInBasket(circle) {
   }
 }
 
-function lessThan(val1, val2) {
-  if(val1 < val2){
-    return val1;
-  }else{
-    return val2;
-  }
-}
-
-function determineDiameter() {
-  var height = square_div_array[0].clientHeight;
-  var width = square_div_array[0].clientWidth;
-  // how to return most correct size circle?
-  return (lessThan(height, width)-5)+'px';
-}
-
 function determineTextSize() {
   return parseInt(determineDiameter(), 10)/4 + 'px';
 }
@@ -118,6 +103,50 @@ function determineTextSize() {
 function randomizeCircleLetters(alphabet) {
   return alphabet[Math.floor(Math.random()*alphabet.length)];
 }
+
+//Changes circle div of id Circle + letter + number to red 
+function changeCircleColorToRed(letter, number) {
+    var temp_circle = document.getElementById('Circle'+ letter + number);
+    temp_circle.style.backgroundColor= 'red';
+}
+
+//Changes circle div of id Circle + letter + number to green 
+function changeCircleColorToGreen(letter, number) {
+    var temp_circle = document.getElementById('Circle'+ letter + number);
+    temp_circle.style.backgroundColor= 'green';
+}
+
+// returns the diameter of circle based on window size
+function determineDiameter() {
+  var height = square_div_array[0].clientHeight;
+  var width = square_div_array[0].clientWidth;
+  // how to return most correct size circle?
+  return (lessThan(height, width)-5)+'px';
+}
+
+// Returns value lesser than out of the inputs val1 and val2
+function lessThan(val1, val2) {
+  if(val1 < val2){
+    return val1;
+  }else{
+    return val2;
+  }
+}
+
+// from http://stackoverflow.com/questions/8877249/generate-random-integers-with-probabilities
+function getRandom (results) {
+    var num = Math.random(),
+        s = 0,
+        lastIndex = weights.length - 1;
+
+    for (var i = 0; i < lastIndex; ++i) {
+        s += weights[i];
+        if (num < s) {
+            return results[i];
+        }
+    }
+    return results[lastIndex];
+};
 
 // returns nearest grid point to x1 and y1
 function getNearestGridPoint(x1, y1) {
@@ -136,6 +165,7 @@ function getNearestGridPoint(x1, y1) {
   return ans;
 }
 
+// generates grid backgroud grid
 //TODO: make border only 1 px thick
 function generateGrid(number_of_rows, number_of_columns)
 {
@@ -167,6 +197,7 @@ function generateGrid(number_of_rows, number_of_columns)
   document.body.insertBefore(container, my_div);
 }
 
+// Returns point array in grid points
 function getGridPoints(number_of_rows, number_of_columns){
   var pointArray = [];
   var i = 0; 
@@ -216,7 +247,23 @@ function generateNCircles(n){
     return circleIDs;
 }
 
-// returns point array for the baskets
+// Returns points of baskets at column c  
+// Helper function for getBasketPoints(row, column) 
+function appendBasketPointsOfColumn(c){
+  var temp_basket_array = [];
+  var squaresInColumn = document.getElementById('Column'+ (c+1)).childNodes;
+  var array_index = 0;
+  for (m = 0 ; m < squaresInColumn.length; m ++){
+    if (m%2) {
+      var rectsInColumn = squaresInColumn[m].getBoundingClientRect();
+      temp_basket_array[array_index] = {x: rectsInColumn.left, y: rectsInColumn.top };
+    }
+    array_index++;
+  }
+  return temp_basket_array;
+}
+
+// returns point array for the baskets to be placed
 function getBasketPoints(number_of_rows, number_of_columns){
   var basket_array= [];
   var i = 0; 
@@ -233,23 +280,7 @@ function getBasketPoints(number_of_rows, number_of_columns){
   return [].concat.apply([], basket_array);
 }
 
-// basket_array is the section of a point array to append points to 
-// n is teh current column number
-function appendBasketPointsOfColumn(c){
-  var temp_basket_array = [];
-  var squaresInColumn = document.getElementById('Column'+ (c+1)).childNodes;
-  var array_index = 0;
-  for (m = 0 ; m < squaresInColumn.length; m ++){
-    if (m%2) {
-      var rectsInColumn = squaresInColumn[m].getBoundingClientRect();
-      temp_basket_array[array_index] = {x: rectsInColumn.left, y: rectsInColumn.top };
-    }
-    array_index++;
-  }
-  return temp_basket_array;
-}
-
-// generates baskets
+// generates basket div elements from basket_point array
 function generateBaskets() {
   container = document.getElementById('container');
   var square_dummy = document.getElementById("Square1");
@@ -268,6 +299,7 @@ function generateBaskets() {
   }
 }
 
+// Returns five points in the basket where cicles should be placed
 function makePointsInBasket(point) {
   var square_dummy = document.getElementById('Square2');
   var rect_dummy = square_dummy.getBoundingClientRect();
@@ -279,33 +311,11 @@ function makePointsInBasket(point) {
   return [eins, zwei, drei, vier, funf];
 }
 
-function changeCircleColorToRed(letter, number) {
-    var temp_circle = document.getElementById('Circle'+ letter + number);
-    temp_circle.style.backgroundColor= 'red';
-}
-
-function changeCircleColorToGreen(letter, number) {
-    var temp_circle = document.getElementById('Circle'+ letter + number);
-    temp_circle.style.backgroundColor= 'green';
-}
-
-// from http://stackoverflow.com/questions/8877249/generate-random-integers-with-probabilities
-function getRandom (results) {
-    var num = Math.random(),
-        s = 0,
-        lastIndex = weights.length - 1;
-
-    for (var i = 0; i < lastIndex; ++i) {
-        s += weights[i];
-        if (num < s) {
-            return results[i];
-        }
-    }
-    return results[lastIndex];
-};
-
-// TODO: Refactor
-function generateAllCircles(initial_alphabet_config) {
+/* Generates Circle divs in each basket. Last two circles  
+ * in basket have random text chosen from initial alphabet 
+ * with equally distributed weights.  */
+// TODO: Refactor, trace bug of layered circles on initialization
+function generateInitialGameStateCircles(initial_alphabet_config) {
   var i = 0;
   var h = 1, n = 1, k = 1, r = 1;
   // for each basket point
@@ -458,11 +468,13 @@ function generateAllCircles(initial_alphabet_config) {
   }
 }
 
-function generateCirclesAtPoint(point, increment){
+// Generates a green draggable circle at point with id Circle+label
+// and centered text of value label
+function generateCirclesAtPoint(point, label){
     container = document.getElementById('container');
     circle = document.createElement("div");
-    // console.log("increment: ", increment);6
-    circle.setAttribute('id', "Circle" + increment);
+    // console.log("label: ", label);6
+    circle.setAttribute('id', "Circle" + label);
     circle.setAttribute('style', 'position: absolute; background-color: green; border-radius: 100px; border: 3px solid black');
     // setting circle's initial position
     circle.style.top = point.y + 'px';
@@ -474,13 +486,13 @@ function generateCirclesAtPoint(point, increment){
     circle.setAttribute('onmouseup', 'mydragg.stopMoving(this, "container");');
     // Creating tables for centering text in circles
     var table = document.createElement("table");
-    table.setAttribute('id', "Table" + increment);
+    table.setAttribute('id', "Table" + label);
     table.setAttribute('style', 'width: 100%; height:100%; text-align: center;');
     var table_row = document.createElement('tr'), table_column = document.createElement('td');
-    table_column.setAttribute("id", "TableColumn" +  increment);
+    table_column.setAttribute("id", "TableColumn" +  label);
     table.appendChild(table_row); table_row.appendChild(table_column);
     // Creating Text
-    var text = document.createTextNode(increment);
+    var text = document.createTextNode(label);
     table_column.style.fontSize = determineTextSize();
     // Adding everything
     table_column.appendChild(text);
@@ -488,6 +500,8 @@ function generateCirclesAtPoint(point, increment){
     container.appendChild(circle);
 }
 
+// Currently does nothing
+// Supposed to resize baskets on window resize
 function resizeBaskets() {
   // var square_dummy = document.getElementById("Square1");
   // for (var i = 0; i < basket_points.length; i++) {
@@ -503,7 +517,8 @@ function resizeBaskets() {
 }
 
 // TODO: fix for circle, text, and basket
-// whenever window is resized, this function is called
+// Whenever window is resized, this function resizes
+// grid, circles, and textsize
 function resizeCanvas() {
   var circleID;
   points = getGridPoints(grid_rows, grid_columns);
@@ -525,16 +540,19 @@ function resizeCanvas() {
   // resizeBaskets();
 }
 
-// Oh boy this is getting messy...
-
-// fix ordering
-var basket_initial_alphabet2 = [ 'H', 'R', 'H', 'N','K', 'H', 'R', 'K','R', 'N', 'H', 'R', 'N', 'K', 'N', 'H','R', 'N', 'H', 'N','K', 'R', 'K', 'R','H', 'K', 'N', 'K','N', 'R', 'K', 'H'];
+// one initialization alphabet determining basket labels
+var basket_initial_alphabet2 = [ 'H', 'R', 'H', 'N',
+                                 'K', 'H', 'R', 'K',
+                                 'R', 'N', 'H', 'R', 
+                                 'N', 'K', 'N', 'H',
+                                 'R', 'N', 'H', 'N',
+                                 'K', 'R', 'K', 'R',
+                                 'H', 'K', 'N', 'K',
+                                 'N', 'R', 'K', 'H'];
+// glabal parameters and variables
 var circle_number = 160 ;
-// var my_div = null;
-// var mainDiv = null;
 var column_div_array = [];
 var square_div_array = [];
-var points;
 var hard_sort_alphabet = ["H", "K", "N", "R"];
 var easy_sort_alphabet = ["C", "D"];
 var grid_rows = 8;
@@ -542,23 +560,26 @@ var grid_columns = 24;
 
 // equal weights for chooseing random letter
 var weights = [0.25, 0.25, 0.25, 0.25];
-// could weight each random differently.
+// could weight each random differently
 var h_weight = [0.1, 0.3, 0.3, 0.3];
 var k_weight = [0.3, 0.1, 0.3, 0.3];
 var n_weight = [0.3, 0.3, 0.1, 0.3];
 var r_weight = [0.3, 0.3, 0.3, 0.1];
 
+// First step is to generate grid div elements
 generateGrid(grid_rows, grid_columns);
 
-//This line of code deosn't work when inseterted in generatCricles function
-points = getGridPoints(grid_rows, grid_columns);
+// Next, get array of points from grid div elements
+var points = getGridPoints(grid_rows, grid_columns);
 
+// Then we create basket points based on grid points
 var basket_points =  getBasketPoints(grid_rows, grid_columns);
 
+// We generate baskets based on basket_points
 generateBaskets();
 
-// want to generate circles after the baskets
-var circleNames = generateAllCircles(circle_number);
+// Finally we generate the circle game elements to be sorted
+var circleNames = generateInitialGameStateCircles(circle_number);
 
 // TODO fix physics dragging/highlighting issue... 
 
