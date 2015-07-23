@@ -52,7 +52,25 @@ var mydragg = function(){
   }
 }();
 
+// Compares basket label circle is in and chages it 
+// to green if label is matching, otherwise changes 
+// circle color to red
 function checkColor(circle) { 
+  var circle_label = circle.id.slice(6,7);
+  var circle_number = circle.id.slice(7, circle.id.length);
+  var basket_label = circleInBasket(circle);
+  if (circle_label == basket_label) {
+    // make circle color green
+    changeCircleColorToGreen(circle_label, circle_number);
+  } else {
+    // make circle color red
+    changeCircleColorToRed(circle_label, circle_number);
+  }
+}
+
+// Same as checkColor but this input is circleID
+function checkColorID(circleID) { 
+  var circle = document.getElementById("Circle"+circleID);
   var circle_label = circle.id.slice(6,7);
   var circle_number = circle.id.slice(7, circle.id.length);
   var basket_label = circleInBasket(circle);
@@ -326,21 +344,25 @@ function generateInitialGameStateCircles(initial_alphabet_config) {
                 case 'H':
                   generateCirclesAtPoint(circle_point, "H"+ h);
                   changeCircleColorToRed("H", h);
+                  checkColorID("H"+ h);
                   h++;
                   break;
                 case 'N':
                   generateCirclesAtPoint(circle_point, "N"+ n);
                   changeCircleColorToRed("N", n);
+                  checkColorID("N"+ n);
                   n++;
                   break;
                 case 'K':
                   generateCirclesAtPoint(circle_point, "K"+ k);
                   changeCircleColorToRed("K", k);
+                  checkColorID("K"+ k);
                   k++;
                   break;
                 case 'R':
                   generateCirclesAtPoint(circle_point, "R"+ r);
                   changeCircleColorToRed("R", r);
+                  checkColorID("R"+ r);
                   r++;
                   break;
               }
@@ -359,21 +381,25 @@ function generateInitialGameStateCircles(initial_alphabet_config) {
                 case 'H':
                   generateCirclesAtPoint(circle_point, "H"+ h);
                   changeCircleColorToRed("H", h);
+                  checkColorID("H"+ h);
                   h++;
                   break;
                 case 'N':
                   generateCirclesAtPoint(circle_point, "N"+ n);
                   changeCircleColorToRed("N", n);
+                  checkColorID("N"+ n);
                   n++;
                   break;
                 case 'K':
                   generateCirclesAtPoint(circle_point, "K"+ k);
                   changeCircleColorToRed("K", k);
+                  checkColorID("K"+ k);
                   k++;
                   break;
                 case 'R':
                   generateCirclesAtPoint(circle_point, "R"+ r);
                   changeCircleColorToRed("R", r);
+                  checkColorID("R"+ r);
                   r++;
                   break;
               }
@@ -392,21 +418,25 @@ function generateInitialGameStateCircles(initial_alphabet_config) {
                 case 'H':
                   generateCirclesAtPoint(circle_point, "H"+ h);
                   changeCircleColorToRed("H", h);
+                  checkColorID("H"+ h);
                   h++;
                   break;
                 case 'N':
                   generateCirclesAtPoint(circle_point, "N"+ n);
                   changeCircleColorToRed("N", n);
+                  checkColorID("N"+ n);
                   n++;
                   break;
                 case 'K':
                   generateCirclesAtPoint(circle_point, "K"+ k);
                   changeCircleColorToRed("K", k);
+                  checkColorID("K"+ k);
                   k++;
                   break;
                 case 'R':
                   generateCirclesAtPoint(circle_point, "R"+ r);
                   changeCircleColorToRed("R", r);
+                  checkColorID("R"+ r);
                   r++;
                   break;
               }
@@ -425,21 +455,25 @@ function generateInitialGameStateCircles(initial_alphabet_config) {
                 case 'H':
                   generateCirclesAtPoint(circle_point, "H"+ h);
                   changeCircleColorToRed("H", h);
+                  checkColorID("H"+ h);
                   h++;
                   break;
                 case 'N':
                   generateCirclesAtPoint(circle_point, "N"+ n);
                   changeCircleColorToRed("N", n);
+                  checkColorID("N"+ n);
                   n++;
                   break;
                 case 'K':
                   generateCirclesAtPoint(circle_point, "K"+ k);
                   changeCircleColorToRed("K", k);
+                  checkColorID("K"+ k);
                   k++;
                   break;
                 case 'R':
                   generateCirclesAtPoint(circle_point, "R"+ r);
-                  changeCircleColorToRed("R", r);;
+                  changeCircleColorToRed("R", r);
+                  checkColorID("R"+ r);
                   r++;
                   break;
               }
@@ -561,23 +595,30 @@ var h_weight = [0.1, 0.3, 0.3, 0.3];
 var k_weight = [0.3, 0.1, 0.3, 0.3];
 var n_weight = [0.3, 0.3, 0.1, 0.3];
 var r_weight = [0.3, 0.3, 0.3, 0.1];
+var basket_points;
+var points;
 
-// First step is to generate grid div elements
-generateGrid(grid_rows, grid_columns);
 
-// Next, get array of points from grid div elements
-var points = getGridPoints(grid_rows, grid_columns);
+function init() {
+  console.log("initialized");
+  // First step is to generate grid div elements
+  generateGrid(grid_rows, grid_columns);
 
-// Then we create basket points based on grid points
-var basket_points =  getBasketPoints(grid_rows, grid_columns);
+  // Next, get array of points from grid div elements
+  points = getGridPoints(grid_rows, grid_columns);
 
-// We generate baskets based on basket_points
-generateBaskets();
+  // Then we create basket points based on grid points
+  basket_points =  getBasketPoints(grid_rows, grid_columns);
 
-// Finally we generate the circle game elements to be sorted
-generateInitialGameStateCircles(circle_number);
+  // We generate baskets based on basket_points
+  generateBaskets();
 
-// check color of each circle once created
+  // Finally we generate the circle game elements to be sorted
+  generateInitialGameStateCircles(circle_number);
+
+  // check color of each circle once created
+}
+
 
 
 
